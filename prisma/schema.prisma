@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Types de zone (enum)
+enum ZoneType {
+  sec
+  frais
+  surgele
+}
+
+// Statuts d'expédition (enum)
+enum ExpeditionStatut {
+  PREPAREE
+  EXPEDIEE
+  LIVREE
+  ANNULEE
+}
+
+model Zone {
+  id           Int            @id @default(autoincrement())
+  code         String         @unique
+  libelle      String         @unique
+  capacite     Float
+  type         ZoneType
+  articles     Article[]
+  preparateurs Preparateur[]
+
+  @@map("zones")
+}
+
+model Article {
+  id          Int      @id @default(autoincrement())
+  reference   String   @unique
+  libelle     String
+  poids       Float
+  qteStock    Int      @default(0)
+  zoneId      Int
+  zone        Zone     @relation(fields: [zoneId], references: [id], onDelete: Restrict)
+  expeditions Expedition[]
+
+  @@map("articles")
+}
+
+model Preparateur {
+  id          Int      @id @default(autoincrement())
+  prenom      String
+  nom         String
+  email       String   @unique
+  telephone   String
+  zoneId      Int
+  zone        Zone     @relation(fields: [zoneId], references: [id], onDelete: Restrict)
+  expeditions Expedition[]
+
+  @@map("preparateurs")
+}
+
+model Expedition {
+  id               Int             @id @default(autoincrement())
+  preparateurId    Int
+  articleId        Int
+  quantite         Int
+  dateExpedition   DateTime
+  adresseLivraison String
+  statut           ExpeditionStatut @default(PREPAREE)
+  preparateur      Preparateur      @relation(fields: [preparateurId], references: [id], onDelete: Restrict)
+  article          Article          @relation(fields: [articleId], references: [id], onDelete: Restrict)
+
+  @@map("expeditions")
+}
