@@ -1,0 +1,33 @@
+# Dépendances Node
+node_modules
+npm-debug.log*
+
+# Variables d'environnement (ne jamais inclure dans l'image !)
+.env
+.env.*
+
+# Git
+.git
+.gitignore
+
+# Logs
+logs
+*.log
+
+# Coverage / tests
+coverage
+.nyc_output
+
+# Editeur / OS
+.DS_Store
+.vscode
+.idea
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# README
+README.md
